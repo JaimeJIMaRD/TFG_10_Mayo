@@ -1,0 +1,123 @@
+@keyframes arriba {
+    from {
+        transform: translateY(0);
+    }
+    to {
+        transform: translateY(-110%);
+    }
+}
+
+@keyframes arribant {
+    from {
+        transform: translateY(-100%);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+
+@keyframes slide-out-left {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(-35vw);
+    }
+}
+
+@keyframes slide-out-leftnt {
+    from {
+        transform: translateX(-35vw);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
+
+@keyframes abajo {
+    from {
+        transform: translateY(0);
+    }
+    to {
+        transform: translateY(20vh);
+    }
+}
+
+@keyframes abajont {
+    0% {
+        transform: translateY(20vh);
+    }
+    60% {
+        transform: translateY(25vh);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+
+.slide-out-left {
+    transform-origin: top left;
+    animation: slide-out-left 1.3s ease-in-out forwards;
+}
+
+.abajo {
+    transform-origin: bottom left;
+    animation: abajo 0.5s 1s ease-in-out forwards;
+}
+
+.arriba {
+    transform-origin: top left;
+    animation: arriba 0.5s ease-in-out forwards;
+}
+
+body {
+    overflow-x: hidden;
+}
+
+.slide-out-leftnt {
+    transform-origin: top left;
+    animation: slide-out-leftnt 0.9s ease-in-out forwards;
+    animation-fill-mode: forwards; /* Mantener estado final de la animación */
+}
+
+.abajont {
+    transform-origin: bottom left;
+    animation: abajont 0.5s ease-in-out forwards;
+    animation-fill-mode: forwards; /* Mantener estado final de la animación */
+}
+
+.arribant {
+    transform-origin: top left;
+    animation: arribant 0.8s ease-in-out forwards;
+    animation-fill-mode: forwards; /* Mantener estado final de la animación */
+}
+
+.activo {
+    border: black solid 0.4rem;
+}
+
+@keyframes aparecer {
+    from {
+        opacity: 0.2;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.aparecer {
+    transform-origin: top left;
+    animation: aparecer 0.4s ease-in-out forwards;
+}
+
+.aparecer2 {
+    transition: opacity 0.2s ease-in-out;
+    transition-delay: 0.25s;
+    opacity: 0;
+    visibility: hidden;
+}
+
+.group:hover .aparecer2 {
+    opacity: 1;
+    visibility: visible;
+}
