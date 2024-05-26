@@ -10,6 +10,7 @@ class UserController extends Controller
     public function profile()
     {
         $user = Auth::user();
+        $user->load('comentarios.elencos'); // Cargar la relación comentarios con elenco
         return view('profile.index', compact('user'));
     }
 

@@ -14,9 +14,11 @@ return new class extends Migration
         Schema::create('papel', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('foto_id')->nullable();
-            $table->foreign('foto_id')->references('id')->on('files')->onDelete('set null');            $table->string('nombre');
-            $table->string('nombre_actor');
-            $table->string('muestra')->nullable();
+            $table->foreign('foto_id')->references('id')->on('files')->onDelete('set null');
+            $table->string('nombre');
+            $table->string('nombre_actor')->nullable();
+            $table->foreign('muestra')->nullable();
+            $table->foreign('muestra')->references('id')->on('files')->onDelete('set null');
             $table->string('descripcion')->nullable();
             $table->unsignedBigInteger('actor_id')->nullable();
             $table->unsignedBigInteger('elenco_id');

@@ -9,13 +9,14 @@
         rel="stylesheet"
     />
     <title>Document</title>
-    <link rel="stylesheet" href="../../css/consulta.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
         href="https://fonts.googleapis.com/css2?family=STIX+Two+Text:ital@1&display=swap"
         rel="stylesheet"
     />
+    <link rel="icon" type="image/jpg" href="{{asset("imagenes/icono.jpg")}}"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
 
         @keyframes arriba {
@@ -112,13 +113,13 @@
         .slide-out-leftnt {
             transform-origin: top left;
             animation: slide-out-leftnt 0.9s ease-in-out forwards;
-            animation-fill-mode: forwards; /* Mantener estado final de la animación */
+            animation-fill-mode: forwards;
         }
 
         .abajont {
             transform-origin: bottom left;
             animation: abajont 0.5s ease-in-out forwards;
-            animation-fill-mode: forwards; /* Mantener estado final de la animación */
+            animation-fill-mode: forwards;
         }
 
         .arribant {
@@ -156,29 +157,67 @@
             opacity: 1;
             visibility: visible;
         }
+
+        /* Ajustar la animación slide-out-left para dispositivos móviles */
+        @media (max-width: 767px) {
+            .slide-out-left {
+                transform-origin: top left;
+                animation: slide-out-left-mb 1.3s ease-in-out forwards;
+            }
+
+            .slide-out-leftnt {
+                transform-origin: top left;
+                animation: slide-out-leftnt-mb 0.9s ease-in-out forwards;
+                animation-fill-mode: forwards;
+            }
+
+            @keyframes slide-out-left-mb {
+                from {
+                    transform: translateX(0);
+                }
+                to {
+                    transform: translateX(-85vw);
+                }
+            }
+
+            @keyframes slide-out-leftnt-mb {
+                from {
+                    transform: translateX(-85vw);
+                }
+                to {
+                    transform: translateX(0);
+                }
+            }
+        }
+
     </style>
+
 </head>
 
 <body>
-<nav class="w-full h-[10vh] bg-green-300 z-20 fixed flex items-center justify-between px-12">
-
+<nav class="w-screen h-[10vh] bg-cyan-400 bg-opacity-100 z-50 fixed flex items-center justify-between px-4 md:px-12">
     <div class="flex items-center w-1/3">
+        <a href="{{ route('index') }}" class="order-2">
+            <svg class="w-8 mr-3 md:hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M575.8 255.5c0 18-15 32.1-32 32.1h-32l.7 160.2c0 2.7-.2 5.4-.5 8.1V472c0 22.1-17.9 40-40 40H456c-1.1 0-2.2 0-3.3-.1c-1.4 .1-2.8 .1-4.2 .1H416 392c-22.1 0-40-17.9-40-40V448 384c0-17.7-14.3-32-32-32H256c-17.7 0-32 14.3-32 32v64 24c0 22.1-17.9 40-40 40H160 128.1c-1.5 0-3-.1-4.5-.2c-1.2 .1-2.4 .2-3.6 .2H104c-22.1 0-40-17.9-40-40V360c0-.9 0-1.9 .1-2.8V287.6H32c-18 0-32-14-32-32.1c0-9 3-17 10-24L266.4 8c7-7 15-8 22-8s15 2 21 7L564.8 231.5c8 7 12 15 11 24z"/></svg>
+        </a>
         @auth
-        <a href="{{ route('profile.index') }}">
-            <img class="w-11 h-11 mx-3" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAACXBIWXMAAAsTAAALEwEAmpwYAAAEGklEQVR4nO2aS2xWRRTHf0hpSyzRPihEIVRXIChEEyJ7DLWJ2OoKH0tSVmChGzbWuBICK3wGwoIVcWmxoguliQEsatAYH4USwksCmCYmyKsPc5L/TSb92ntn5k5bNPyTSb5895w59//NnDPnnPngAf6/eBTYCOwGeoHfgOvALQ37/CvwmWReAh7hPkEN8DpwFBgBxgOH6XwBvKa5Zhy1wHbgsvNSt4FjQA/QAawEGiVbq8+rgFck0w/ccfQvAW9JdkbwInDWeYEfgE6gPmKueun+6Mx3BtjANMJ+qQ8dg2a8NdHcc/QDnXbm3zcd220R8L0M/ANsA+amNgJUAV0KDmZrAGhONXmLltsm/h14ukB+BbAT+AYYEvGbwDngELDOw+ZqYFA2B/UOpVciI3FSDjsVmoCDwGhBpBoD3pV8HpqA7xwyzWV8IttOJ4C6HFkz8ktg6L0HfAI8nDNvnUNmINZnPnK2U95KPAR8G3GGZMN0qwtWZlCy74eSaHMcu8gnXi1BIhvdBTbWOAHAOzTPl5Oa0lYP+d4ERM572Oly/MVri+1wzom5HvH/7wREbDzpEZp/kqyF/0IHvxywhAsTkbCxPmDLXypalTckaNHKB4sTEmn3sDfHSWc25Ql+JaHNnkSaExLxdeItku/LS+BGlMVabeGDBTrgUhBZ7mmzQVnzvanqmXZN+DVhuJCAxGhg+t4vPSvOKrBHD98OJNKXgMjPgTbfkZ5VmhU4oocvB076QQIilqOFoEN6VjZXIEsDLHv1haUnfyYgckVz+WKlkz5V4C89NGfyRUPCqBViNzu/rk32MKuf8xK4iZinfKwsiduBmW2No5eECOqglCVinZQQZETsnZNsLcNzqgBjSZjus4E2m6R7I8/ZfQ+myaJIzDDdUDyV5+x9keE3W+prESSuRmxl9/C2I6MCeyMPxAzdEUSsyReDnrwDMTZFcSPYqQASA6oxYnAsL0VpVCIWkjROxJIAIo9H2mhQtLqb955fBqbxk62KL5HY1eiU/ud5Qm9KyIqXGNQFEMlrL/kUVnYLkBt9slI3pq/7RAARkw1Fm3Qv+kS7LPqcDlz+FnUjfYlY029ZwPxVSvfHdf1QiBqnHeSjsBbYH3m6m84B4HkPO9ulMxhy9rSphLWm2DNTpAhbJ1wDlB32a3dN0ePNGnRjMVs+a5n+4TScrUt+eMJNU+pxF/hUL5+l7GecO5NgzHcayCdUCRZ12lOOUeBjx++Ol7mWW6x7jfFZHkO64iiFpc7SzsY4FxmqJ8VjgaE11TiuXZEUtdqzqRpyeWNMPjmtd++t0+w3Z4EXmCHUKOZfSUjAUqNtkYVWaVTr7xdHFf9DX/6OGg+blDnfF6hXcbZLZbP9gWbYeelhfWfP3lNJHfNviQfgv4B/ARxzhNGFGL+bAAAAAElFTkSuQmCC">
-        </a>
-        <a href="{{ route('elenco.index') }}">
-            <img class="w-11 p-1 h-11 mx-3" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAACXBIWXMAAAsTAAALEwEAmpwYAAAC5klEQVR4nO3ZW6gVZRQH8F9lGd6g8EDpOSKlkfggiBgY5EOgpoQgQhTVQ2CahJcHCS8PQQg+6JuhPggiiHhBkDITpSAsAiuiIEGE8kqiHlETs9CJiXUOwzR7t89pe2YOzR/Wyzdr5vuv9V9rfd9mMzjwDFbhC1zDQYw0CPAgZmADTiIpsDUqimGYj+24lCN9FcdzaydUCKPxJvbiZo7oL9iGl/Fw+D+Hz+L5PXSWSX4S3sNXuNugbE5gYpNvfBx+bw8gbw/hBWzEqQbEi+yPUKQo6yvC59D9Jj8cC7ADl3MEr2N/kPm2hYBuYxOmYy2+yTxLv912PBlSH4rNs2TSEtqMF/FI5p0H8EoflUrwWyRjdrvIT8ZqfN2k3nvsZ7wRozWPtJkX40KT9y9Gqc3Fo+2o95kh9emCzbpbyOYPmJf55pgIIm3gvJI/Yn2UVaref8IILMROXCmo9wNRUuMwBG/hTAsBfRnT6V5m7c8YryvxlDZgLJbgE/zegEh64j7b4P2hWF5wsBXZDezD63i8HeSnYF1Blv5tRH6IJwq+NyrUyR90qZ3HFsyJoNuCkXEZy4+8j7Ao7ju3WpgiH8RhtxRHcCfn8334TGtHvRfh3cyRvyvmf3oOyDXk1lCg1RGZ1vsxLMN4A4B3MpvfiYZOa3ZCge/EmN+NyKfNvwev4TEDjOcbkEoDejp8UlKvYnfBiD0bfTIrd9gNOHYFoU+jhDpjWvXM/M+jTLLkv8P7mHq/6r0/+DXIdWXWugqm09Hop/S8qCS6g2xnk0CqbsfFj5okyqkr7HAFyCV9tL+vAvmrdpLpkY6cgh2xXhX/pCcQMeerQKqjj/7/CCS7kNpPBdeOZpuU4S8mZ8NABmMQSVEgg9V6UTaROpBaEeWXUVL3iPIzntSKKD/LSa2I8jOb1IoEys5orUgkoRdlZ7RWpFZENa0XZROpA6kVUX4ZJf+LHjlXATJJPy39j6YXL8VC2aT6E8ScvwAnYZZsqyKAtQAAAABJRU5ErkJggg==">
-        </a>
+        <a href="{{ route('profile.index') }}" class="order-3">
+            <svg class="w-7 hover:scale-110 transition-transform duration-100 ease-in-out" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512H418.3c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304H178.3z"/></svg>        </a>
+        <a href="{{ route('elenco.index') }}" class="order-4">
+            <svg class="w-8 mx-3 md:mx-7 hover:scale-110 transition-transform duration-100 ease-in-out" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M448 32H361.9l-1 1-127 127h92.1l1-1L453.8 32.3c-1.9-.2-3.8-.3-5.8-.3zm64 128V96c0-15.1-5.3-29.1-14-40l-104 104H512zM294.1 32H201.9l-1 1L73.9 160h92.1l1-1 127-127zM64 32C28.7 32 0 60.7 0 96v64H6.1l1-1 127-127H64zM512 192H0V416c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V192z"/></svg>        </a>
         @else
-            <a href="{{ route('login') }}">
-                <button>Iniciar sesión</button>
+            <a href="{{ route('login') }}" class="order-1">
+                <svg class="w-8 md:hidden md:mr-0 mr-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M217.9 105.9L340.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L217.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1L32 320c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM352 416l64 0c17.7 0 32-14.3 32-32l0-256c0-17.7-14.3-32-32-32l-64 0c-17.7 0-32-14.3-32-32s14.3-32 32-32l64 0c53 0 96 43 96 96l0 256c0 53-43 96-96 96l-64 0c-17.7 0-32-14.3-32-32s14.3-32 32-32z"/></svg>
+                <button class="mr-5 hover:scale-105 transition-transform duration-100 ease-in-out hidden md:block">Iniciar sesión</button>
+            </a>
+            <a class="hidden md:block hover:scale-105 mr-3 transition-transform duration-100 ease-in-out" href="{{ route('register') }}">
+                <button>Registrarse</button>
             </a>
         @endauth
             @auth
                 @if(auth()->user()->rol === 1)
-                <a href="{{ route('admin.personajes.index') }}">
-                    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Administrar Personajes</button>
+                <a href="{{ route('admin.personajes.index') }}" class="order-5">
+                    <svg class="w-7 hover:scale-110 transition-transform duration-100 ease-in-out" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M144 144v48H304V144c0-44.2-35.8-80-80-80s-80 35.8-80 80zM80 192V144C80 64.5 144.5 0 224 0s144 64.5 144 144v48h16c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V256c0-35.3 28.7-64 64-64H80z"/></svg>                </a>
                 </a>
                 @endif
             @endauth
@@ -186,13 +225,15 @@
 
 
     <a href="{{ route('index') }}">
-        <p class="text-center my-auto translate-y-0  transition-transform duration-200 hover:scale-[105%] ease-in-out scale-100 font-bold text-3xl w-fit" id="doblapedia">Doblapedia</p>
+        <p class="text-center hidden md:block my-auto translate-y-0 transition-transform duration-200 hover:scale-[105%] ease-in-out scale-100 font-bold text-3xl w-fit" id="doblapedia">
+            <img class="w-[140px] mt-0.5" src="{{asset("imagenes/logo2.png")}}" alt="">
+        </p>
     </a>
-    <div class="w-1/3">
-        <form id="search-form" action="{{ route('actors.search') }}" method="GET" class="relative w-fit mx-auto">
+    <div class="md:w-1/3 w-1/2">
+        <form id="search-form" action="{{ route('actors.search') }}" method="GET" class="relative w-full md:w-[82%] ml-auto">
             <input type="text" id="search-input" name="q" placeholder="Buscar actor..."
-                   class="px-3 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-500">
-            <button type="submit" class="absolute top-1/2 transform -translate-y-1/2 px-4 py-.5 bg-blue-500 text-white right-1.5 rounded-md">Buscar</button>
+                   class="px-3 py-1 border w-full border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-500">
+            <button type="submit" class="absolute top-1/2 transform bg-cyan-500 bg-opacity-70 hover:bg-cyan-300 -translate-y-1/2 p-1.5 hover:bg-opacity-100 text-white right-1.5 rounded-full"><svg class="w-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="#ffffff" d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg></button>
         </form>
 
     </div>

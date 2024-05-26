@@ -3,23 +3,24 @@
 @section('content')
     <div class="container">
         <div class="pt-[10vh]">
-            <h1>Crear Personaje</h1>
-            <form action="{{ route('admin.personajes.store') }}" method="POST" enctype="multipart/form-data">
+            <h1>Editar Personaje</h1>
+            <form action="{{ route('admin.personajes.update', $personaje->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
+                @method('PUT')
 
                 <div class="mb-3">
                     <label for="nombre" class="form-label">Nombre</label>
-                    <input type="text" class="form-control" id="nombre" name="nombre" required>
+                    <input type="text" class="form-control" id="nombre" name="nombre" value="{{ $personaje->nombre }}" required>
                 </div>
 
                 <div class="mb-3">
                     <label for="serie" class="form-label">Serie</label>
-                    <input type="text" class="form-control" id="serie" name="serie" required>
+                    <input type="text" class="form-control" id="serie" name="serie" value="{{ $personaje->serie }}" required>
                 </div>
 
                 <div class="mb-3">
                     <label for="actor_original" class="form-label">Actor Original</label>
-                    <input type="text" class="form-control" id="actor_original" name="actor_original">
+                    <input type="text" class="form-control" id="actor_original" value="{{ $personaje->actor_original }}" name="actor_original">
                 </div>
 
                 <div class="mb-3">
@@ -47,13 +48,22 @@
                     </select>
                 </div>
 
+
                 <div id="otros-actores-container">
-                    <!-- Contenedor para los campos de otros actores -->
+                    @foreach($personaje->otros_actores as $index => $otroActor)
+                        <div class="mb-3">
+                            <label for="otro_actor_nombre_{{ $index }}">Otro Actor {{ $index + 1 }}:</label>
+                            <input type="text" name="otros_actores[{{ $index }}][nombre]" class="form-control" value="{{ $otroActor->nombre_actor }}">
+                            <label for="otro_actor_contexto_{{ $index }}">Contexto:</label>
+                            <input type="text" name="otros_actores[{{ $index }}][contexto]" class="form-control" value="{{ $otroActor->contexto }}">
+                            <button type="button" class="btn btn-danger eliminar-actor" onclick="eliminarActor(this)">Eliminar</button>
+                        </div>
+                    @endforeach
                 </div>
 
                 <button type="button" id="agregar-otro-actor" class="bg-amber-500 mb-3">Agregar Otro Actor</button>
 
-                <button type="submit" class="btn btn-primary">Crear Personaje</button>
+                <button type="submit" class="btn btn-primary">Actualizar Personaje</button>
             </form>
         </div>
     </div>
@@ -90,22 +100,21 @@
             inputContexto.setAttribute('placeholder', 'Contexto');
             actorDiv.appendChild(inputContexto);
 
+            var eliminarButton = document.createElement('button');
+            eliminarButton.type = 'button';
+            eliminarButton.className = 'btn btn-danger eliminar-actor';
+            eliminarButton.textContent = 'Eliminar';
+            eliminarButton.onclick = function() {
+                container.removeChild(actorDiv);
+            };
+            actorDiv.appendChild(eliminarButton);
+
             container.appendChild(actorDiv);
         });
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('formulario').addEventListener('submit', function(event) {
-                var muestraInput = document.getElementById('muestra');
-                var muestraFile = muestraInput.files[0];
-                var allowedTypes = ['video/mp4'];
 
-                if (muestraFile) {
-                    if (!allowedTypes.includes(muestraFile.type)) {
-                        event.preventDefault(); // Detener el envío del formulario
-                        alert('El archivo de muestra debe ser de tipo MP4.');
-                    }
-                }
-            });
-        });
-
+        function eliminarActor(button) {
+            var container = document.getElementById('otros-actores-container');
+            container.removeChild(button.parentNode);
+        }
     </script>
 @endsection

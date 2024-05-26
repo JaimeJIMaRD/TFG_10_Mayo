@@ -16,6 +16,11 @@ class Actor extends Model
         'estado',
         'actores_recurrentes',
         'foto_id',
+        'eldoblaje',
+        'twitter',
+        'ciudad',
+        'instagram',
+        'cumpleanos',
     ];
 
     public function papeles()

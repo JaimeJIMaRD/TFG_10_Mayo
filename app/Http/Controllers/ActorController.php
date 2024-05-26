@@ -12,7 +12,12 @@ class ActorController extends Controller
         $actor = Actor::orderBy('apellido')->get()->groupBy(function($item) {
             return strtoupper(substr($item->apellido, 0, 1));
         });
-        return view('actor.index', compact('actor'));
+        $ultimos = Actor::orderBy('created_at', 'desc')->take(3)->get();
+
+        $agregados = Actor::whereHas('personajes', function ($query) {
+            $query->orderBy('created_at', 'desc');
+        })->orderBy('updated_at', 'desc')->take(3)->get();
+        return view('actor.index', compact('actor', 'ultimos', 'agregados'));
     }
 
         public function show($id)
@@ -23,13 +28,6 @@ class ActorController extends Controller
 
             return view('actor.show', compact('actor', 'personajes'));
         }
-
-    public function getActorName($actor_id)
-    {
-        $actor = Actor::findOrFail($actor_id);
-        $nombre_completo = $actor->nombre . ' ' . $actor->apellido;
-        return $nombre_completo;
-    }
 
     public function search(Request $request)
     {

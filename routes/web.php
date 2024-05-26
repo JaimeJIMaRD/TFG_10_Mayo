@@ -33,13 +33,26 @@ Route::middleware([AdminRole::class])->group(function () {
     Route::get('/actores', [AdminController::class, 'indexActor'])->name('admin.actores.index');
     Route::delete('/actores/{id}', [AdminController::class, 'deleteActor'])->name('admin.actores.delete');
 
+    Route::get('/admin/actores/{id}/edit', [AdminController::class, 'editActor'])->name('admin.actores.edit');
+    Route::put('/admin/actores/{id}', [AdminController::class, 'updateActor'])->name('admin.actores.update');
+
+    Route::get('personajes/{id}/edit', [AdminController::class, 'editPersonaje'])->name('admin.personajes.edit');
+    Route::put('personajes/{id}', [AdminController::class, 'updatePersonaje'])->name('admin.personajes.update');
+
+    Route::post('users/{id}/change-role', [AdminController::class, 'changeUserRole'])->name('admin.users.changeRole');
+    Route::get('/usuarios', [AdminController::class, 'indexUser'])->name('admin.user.index');
 });
 Route::middleware(['auth'])->group(function () {
     Route::get('/profile', [UserController::class, 'profile'])->name('profile.index');
     Route::post('/logout', [UserController::class, 'logout'])->name('logout');
     Route::get('elenco/create', [ElencoController::class, 'create'])->name('elenco.create');;
+    Route::get('/elenco/search', [ElencoController::class, 'search'])->name('elenco.search');
+
     Route::get('elenco/{id}', [ElencoController::class, 'show'])->name('elenco.show');;
     Route::get('elenco/', [ElencoController::class, 'index'])->name('elenco.index');
+    Route::get('/elenco/{id}/editar',  [ElencoController::class, 'editarElenco'])->name('elenco.editar');
+    Route::put('/elenco/{id}/actualizar',  [ElencoController::class, 'actualizarElenco'])->name('elenco.actualizar');
+    Route::delete('/elenco/{id}', [ElencoController::class, 'destroy'])->name('elenco.destroy');
 
     Route::post('elenco/store', [ElencoController::class, 'guardarElenco'])->name('guardar_elenco');
     // Route::patch('/elencos/{id}/like', [ElencoController::class, 'toggleLike'])->name('elencos.like');
@@ -48,6 +61,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/comentarios', [ComentarioController::class, 'store'])->name('comentario.store');
     Route::delete('/comentarios/{id}', [ComentarioController::class, 'destroy'])->name('comentario.destroy');
     Route::get('/files/download/{filename}', [FileController::class, 'download'])->name('files.download'); // Agrega la ruta para el método download
+
 });
 
 require __DIR__.'/auth.php';

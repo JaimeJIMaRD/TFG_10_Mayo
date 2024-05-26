@@ -11,7 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('otro_actor', function (Blueprint $table) {           $table->id();
+        Schema::create('otro_actor', function (Blueprint $table) {
+            $table->id();
             $table->string('nombre_actor');
             $table->string('contexto')->nullable();
             $table->unsignedBigInteger('actor_id')->nullable();

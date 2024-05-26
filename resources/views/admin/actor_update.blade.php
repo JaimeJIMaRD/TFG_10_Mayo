@@ -3,23 +3,24 @@
 @section('content')
     <div class="container">
         <div class="pt-[10vh]">
-            <h1>Crear Actor</h1>
-            <form action="{{ route('admin.actores.store') }}" method="POST" enctype="multipart/form-data">
+            <h1>Editar Actor</h1>
+            <form action="{{ route('admin.actores.update', $actor->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
+                @method('PUT')
                 <div class="mb-3">
                     <label for="nombre" class="form-label">Nombre</label>
-                    <input type="text" class="form-control" id="nombre" name="nombre" required>
+                    <input type="text" class="form-control" id="nombre" name="nombre" value="{{ $actor->nombre }}" required>
                 </div>
                 <div class="mb-3">
                     <label for="apellido" class="form-label">Apellido</label>
-                    <input type="text" class="form-control" id="apellido" name="apellido" required>
+                    <input type="text" class="form-control" id="apellido" name="apellido" value="{{ $actor->apellido }}" required>
                 </div>
                 <div class="mb-3">
                     <label for="estado" class="form-label">Estado</label>
                     <select class="form-select" id="estado" name="estado" required>
-                        <option value="0">Activo</option>
-                        <option value="1">Retirado</option>
-                        <option value="2">En memoria</option>
+                        <option value="0" {{ $actor->estado == 0 ? 'selected' : '' }}>Activo</option>
+                        <option value="1" {{ $actor->estado == 1 ? 'selected' : '' }}>Retirado</option>
+                        <option value="2" {{ $actor->estado == 2 ? 'selected' : '' }}>En memoria</option>
                     </select>
                 </div>
                 <div class="mb-3">
@@ -28,38 +29,44 @@
                 </div>
 
                 <div id="actores-recurrentes-container">
-                    <!-- Contenedor para los campos de actores recurrentes -->
+                    @foreach(json_decode($actor->actores_recurrentes, true) ?? [] as $index => $actor_recurrente)
+                        <div class="mb-3 actor-recurrente">
+                            <label for="actor_recurrente_{{ $index }}">Actor Recurrente {{ $index + 1 }}:</label>
+                            <input type="text" name="actores_recurrentes[]" class="form-control" value="{{ $actor_recurrente }}">
+                            <button type="button" class="eliminar-actor-recurrente bg-red-500 text-white px-2 py-1 rounded">Eliminar</button>
+                        </div>
+                    @endforeach
                 </div>
 
                 <button type="button" id="agregar-actor-recurrente" class="bg-amber-500 mb-3">Agregar Actor Recurrente</button>
 
-                <!-- Nuevos campos -->
                 <div class="mb-3">
-                    <label for="eldoblaje" class="form-label">El Doblaje</label>
-                    <input type="text" class="form-control" id="eldoblaje" name="eldoblaje">
+                    <label for="eldoblaje" class="form-label">ElDoblaje</label>
+                    <input type="text" class="form-control" id="eldoblaje" name="eldoblaje" value="{{ $actor->eldoblaje }}">
                 </div>
 
                 <div class="mb-3">
                     <label for="twitter" class="form-label">Twitter</label>
-                    <input type="text" class="form-control" id="twitter" name="twitter">
+                    <input type="text" class="form-control" id="twitter" name="twitter" value="{{ $actor->twitter }}">
                 </div>
 
                 <div class="mb-3">
                     <label for="ciudad" class="form-label">Ciudad</label>
-                    <input type="text" class="form-control" id="ciudad" name="ciudad">
+                    <input type="text" class="form-control" id="ciudad" name="ciudad" value="{{ $actor->ciudad }}">
                 </div>
 
                 <div class="mb-3">
                     <label for="instagram" class="form-label">Instagram</label>
-                    <input type="text" class="form-control" id="instagram" name="instagram">
+                    <input type="text" class="form-control" id="instagram" name="instagram" value="{{ $actor->instagram }}">
                 </div>
 
                 <div class="mb-3">
                     <label for="cumpleanos" class="form-label">Cumpleaños</label>
-                    <input type="date" class="form-control" id="cumpleanos" name="cumpleanos">
+                    <input type="date" class="form-control" id="cumpleanos" name="cumpleanos" value="{{ $actor->cumpleanos }}">
                 </div>
 
-                <button type="submit" class="btn btn-primary">Crear Actor</button>
+
+                <button type="submit" class="btn btn-primary">Actualizar Actor</button>
             </form>
         </div>
     </div>

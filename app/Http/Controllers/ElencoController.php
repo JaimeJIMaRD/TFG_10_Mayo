@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Actor;
 use App\Models\Elenco;
 use App\Models\File;
 use App\Models\Gusta;
@@ -27,7 +28,8 @@ class ElencoController extends Controller
 
     public function create()
     {
-        return view('elenco.create');
+        $actores = Actor::all();
+        return view('elenco.create', compact('actores'));
     }
 
     public function guardarElenco(Request $request)
@@ -38,26 +40,43 @@ class ElencoController extends Controller
         $elenco->descripcion = $request->input('descripcion_elenco');
         $elenco->user_id = $user->id;
         $elenco->save();
+
         if ($request->hasFile('imagen_elenco')) {
             $fileModel = new File();
-            $fileModel->name = $request->file('imagen_elenco')->getClientOriginalName();
+            $fileModel->name = time() . '_' . uniqid();
             $request->file('imagen_elenco')->move('imagenes/', $fileModel->name);
             $fileModel->file_path = 'imagenes/' . $fileModel->name;
             $fileModel->save();
-            $elenco->{'imagen_id'} = $fileModel->id;
+            $elenco->imagen_id = $fileModel->id;
             $elenco->save();
         }
 
         foreach ($request->input('papeles') as $index => $papelData) {
             $papel = new Papel();
             $papel->nombre = $papelData['personaje'];
-            $papel->nombre_actor = $papelData['actor'];
-            $papel->actor_id = $papelData['actor_id'];
+
+            if (isset($papelData['actor_id'])) {
+                $papel->actor_id = $papelData['actor_id'];
+            } elseif (isset($papelData['actor_nombre'])) {
+                $papel->nombre_actor = $papelData['actor_nombre'];
+            }
+            $papel->descripcion = $papelData['descripcion'];
+
+            if ($request->hasFile('papeles.' . $index . '.archivo_muestra')) {
+                $fileModel = new File();
+                $fileModel->name = time() . '_' . uniqid();
+                $request->file('papeles.' . $index . '.archivo_muestra')->move('imagenes/', $fileModel->name);
+                $fileModel->file_path = 'imagenes/' . $fileModel->name;
+                $fileModel->save();
+                $papel->muestra = $fileModel->id;
+            }
+
             $papel->elenco_id = $elenco->id;
+            $papel->save();
 
             if ($request->hasFile('papeles.' . $index . '.imagen')) {
                 $fileModel = new File();
-                $fileModel->name = $request->file('papeles.' . $index . '.imagen')->getClientOriginalName();
+                $fileModel->name = time() . '_' . uniqid();
                 $request->file('papeles.' . $index . '.imagen')->move('imagenes/', $fileModel->name);
                 $fileModel->file_path = 'imagenes/' . $fileModel->name;
                 $fileModel->save();
@@ -66,11 +85,8 @@ class ElencoController extends Controller
             }
         }
 
-
         return redirect()->route('elenco.index');
     }
-
-
 
     public function show($id)
     {
@@ -78,23 +94,19 @@ class ElencoController extends Controller
         $user = Auth::user();
         $likeStatus = [];
         $likeStatus[$elenco->id] = $user ? $user->gustas()->where('elenco_id', $elenco->id)->exists() : false;
-        return view('elenco.show', compact('elenco', 'likeStatus')); // Asegúrate de pasar $likeStatus a la vista
+        return view('elenco.show', compact('elenco', 'likeStatus'));
     }
-
 
     public function like($id)
     {
         $user = Auth::user();
         $elenco = Elenco::findOrFail($id);
 
-        // Verificar si el usuario ya ha dado like a este elenco
         $existingLike = $user->gustas()->where('elenco_id', $id)->first();
 
         if ($existingLike) {
-            // Si ya existe un like, eliminarlo
             $existingLike->delete();
         } else {
-            // Si no existe un like, crear uno nuevo
             $like = new Gusta();
             $like->user_id = $user->id;
             $like->elenco_id = $elenco->id;
@@ -104,5 +116,103 @@ class ElencoController extends Controller
         // Retorna la cantidad total de likes actualizada
         return $elenco->gustas()->count();
     }
+
+    public function search(Request $request)
+    {
+        $query = $request->input('q');
+
+        if (!$query) {
+            return redirect()->route('elenco.index');
+        }
+
+        $elencos = Elenco::where('titulo', 'LIKE', "%$query%")
+            ->orWhere('descripcion', 'LIKE', "%$query%")
+            ->orderBy('titulo')
+            ->get();
+        $user = Auth::user();
+        $likeStatus = [];
+
+        foreach ($elencos as $elenco) {
+            $likeStatus[$elenco->id] = $user ? $user->gustas()->where('elenco_id', $elenco->id)->exists() : false;
+        }
+        return view('elenco.search', compact('elencos', 'likeStatus', 'query'));
+    }
+
+    public function editarElenco($id)
+    {
+        $elenco = Elenco::with('papeles')->findOrFail($id);
+        $actores = Actor::all();
+        return view('elenco.update', compact('elenco', 'actores'));
+    }
+
+    public function actualizarElenco(Request $request, $id)
+    {
+        $user = Auth::user();
+        $elenco = Elenco::findOrFail($id);
+        $elenco->titulo = $request->input('nombre_elenco');
+        $elenco->descripcion = $request->input('descripcion_elenco');
+        $elenco->user_id = $user->id;
+        $elenco->save();
+
+        if ($request->hasFile('imagen_elenco')) {
+            $fileModel = new File();
+            $fileModel->name = time() . '_' . uniqid();
+            $request->file('imagen_elenco')->move('imagenes/', $fileModel->name);
+            $fileModel->file_path = 'imagenes/' . $fileModel->name;
+            $fileModel->save();
+            $elenco->imagen_id = $fileModel->id;
+            $elenco->save();
+        }
+
+        $elenco->papeles()->delete();
+
+        foreach ($request->input('papeles') as $index => $papelData) {
+            $papel = new Papel();
+            $papel->nombre = $papelData['personaje'];
+
+            if (isset($papelData['actor_id'])) {
+                $papel->actor_id = $papelData['actor_id'];
+            } elseif (isset($papelData['actor_nombre'])) {
+                $papel->nombre_actor = $papelData['actor_nombre'];
+            }
+            $papel->descripcion = $papelData['descripcion'];
+            $papel->elenco_id = $elenco->id;
+
+            if ($request->hasFile('papeles.' . $index . '.archivo_muestra')) {
+                $fileModel = new File();
+                $fileModel->name = time() . '_' . uniqid();
+                $request->file('papeles.' . $index . '.archivo_muestra')->move('imagenes/', $fileModel->name);
+                $fileModel->file_path = 'imagenes/' . $fileModel->name;
+                $fileModel->save();
+                $papel->muestra = $fileModel->id;
+            }
+
+            if ($request->hasFile('papeles.' . $index . '.imagen')) {
+                $fileModel = new File();
+                $fileModel->name = time() . '_' . uniqid();
+                $request->file('papeles.' . $index . '.imagen')->move('imagenes/', $fileModel->name);
+                $fileModel->file_path = 'imagenes/' . $fileModel->name;
+                $fileModel->save();
+                $papel->foto_id = $fileModel->id;
+            }
+
+            $papel->save();
+        }
+
+        return redirect()->route('elenco.index');
+    }
+
+    public function destroy($id)
+    {
+        $elenco = Elenco::findOrFail($id);
+        $elenco->papeles()->delete();
+        $elenco->gustas()->delete();
+        $elenco->comentarios()->delete();
+
+        $elenco->delete();
+
+        return redirect()->route('elenco.index')->with('success', 'Elenco eliminado exitosamente.');
+    }
+
 
 }

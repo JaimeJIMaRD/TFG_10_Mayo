@@ -25,6 +25,7 @@ return new class extends Migration
             $table->string('twitter')->nullable();
             $table->string('ciudad')->nullable();
             $table->string('instagram')->nullable();
+            $table->date('cumpleanos')->nullable();
             $table->timestamps();
         });
     }
